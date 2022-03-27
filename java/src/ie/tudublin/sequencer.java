@@ -49,12 +49,39 @@ public class sequencer extends Visual {
             
         }
     }
+
+    public void chorusbase()
+    {
+        strokeWeight(2);
+        render();
+
+        if (frameCount % 30 == 0)
+        {
+            int poi = (int) (50 * getSmoothedAmplitude());
+            if (poi >= 3 )
+            {
+                poi = poi + 2;
+            }
+            createShape(0,0,1,poi);
+        }
+
+        pushMatrix();
+        camera(0, 0, 0, 0, 0, -1, 0, 1, 0);
+        translate(0, 0, -200);
+
+        rotateX(angle);
+        rotateZ(angle);       
+        float boxSize = (400 * getSmoothedAmplitude()); 
+        sphere(boxSize);   
+        popMatrix();
+        angle += 0.01f;
+    }
     
     public void settings()
     {
         size(800, 800, P3D);
         println("CWD: " + System.getProperty("user.dir"));
-        fullScreen(P3D, SPAN);
+        fullScreen(P3D, 1);
     }
 
     public void setup(){
@@ -73,10 +100,21 @@ public class sequencer extends Visual {
 
     int stage = 0;
     int time = 0;
+    float rot = 0;
 
     public void draw()
     {
         calculateAverageAmplitude();
+        try
+        {
+            calculateFFT();
+        }
+        catch(VisualException e)
+        {
+            e.printStackTrace();
+        }
+        calculateFrequencyBands();
+        rot += getAmplitude() / 8.0f;
         background(0);
         noFill();
         lights();
@@ -86,35 +124,13 @@ public class sequencer extends Visual {
             
             break;
             
-
             case 1:
             
             break;
             
-
             case 2: // Chorus 1
-            
-                strokeWeight(2);
-                render();
-
-                if (frameCount % 30 == 0){
-                    int poi = (int) (50 * getSmoothedAmplitude());
-                        if (poi >= 3 ){
-                            poi = poi + 2;
-                        }
-                        createShape(0,0,1,poi);
-                    }
-                pushMatrix();
-                camera(0, 0, 0, 0, 0, -1, 0, 1, 0);
-                translate(0, 0, -200);
-
-                rotateX(angle);
-                rotateZ(angle);       
-                float boxSize = (400 * getSmoothedAmplitude()); 
-                sphere(boxSize);   
-                popMatrix();
-                angle += 0.01f;
-                break;
+            chorusbase();
+            break;
 
             case 3:
             
@@ -122,63 +138,21 @@ public class sequencer extends Visual {
             break;
 
             case 4: // chorus 2
-            
-            strokeWeight(2);
-
-            render();
-
-            if (frameCount % 30 == 0){
-                int poi = (int) (50 * getSmoothedAmplitude());
-                if (poi >= 3 ){
-                    poi = poi + 2;
-                }
-                createShape(0,0,1,poi);
-            }
-                pushMatrix();
-            camera(0, 0, 0, 0, 0, -1, 0, 1, 0);
-            translate(0, 0, -200);
-            rotateX(angle);
-            rotateZ(angle);       
-            boxSize = (400 * getSmoothedAmplitude()); 
-            sphere(boxSize);   
-            popMatrix();
-            angle += 0.01f;
+            chorusbase();
             break;
             
             
 
             case 5:
+
             break;
 
             case 6:
+            chorusbase();
+            break;
             
-                strokeWeight(2);
-
-                render();
-        
-                if (frameCount % 30 == 0){
-                    int poi = (int) (50 * getSmoothedAmplitude());
-                    if (poi >= 3 ){
-                        poi = poi + 2;
-                    }
-                    createShape(0,0,1,poi);
-                }
-                pushMatrix();
-                camera(0, 0, 0, 0, 0, -1, 0, 1, 0);
-                translate(0, 0, -200);
-        
-                rotateX(angle);
-                rotateZ(angle);       
-                boxSize = (400 * getSmoothedAmplitude()); 
-                sphere(boxSize);   
-                popMatrix();
-                angle += 0.01f;
-                break;
-            
-
             case 7:
             
-
             break;
         }
         if (frameCount % 60 == 0){
