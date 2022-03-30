@@ -1,8 +1,9 @@
 To Do list
 
+refactor the files, this will be annoying
 convert sequencer file into multiple files and classes to encouarge reuse of existing code and make sure inheritence is good aswell.
 add wave form to the chorus somewhere idn where yet
-sort out a timing system that isnt reling on the framerate being consitant
+sort out a timing system that isnt reling on the framerate being consitant -/done
 comment the code a little bit
 make the renderlist cleaner less agressive with its deletions, solution we have atm is a stopgap
 add more JAZZ
