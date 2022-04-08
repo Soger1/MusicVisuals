@@ -3,7 +3,7 @@ import c20322553.Shape;
 
 import ie.tudublin.Visual;
 import ie.tudublin.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.time.*;
 
 
@@ -22,10 +22,10 @@ public class Orderer extends Visual {
           vertex(sx, sy, 0);
         }
         endShape(CLOSE);
-      }
+    }
 
-      public void createShape(int x, int y, int size, int points, int z, int type){ // adds shapes to the render list
-        Renderlist.add(new Shape(x,y,size,points,z, type));
+    public void createShape(int x, int y, int size, int points, int z, int type, int life){ // adds shapes to the render list
+        Renderlist.add(new Shape(x,y,size,points,z,type,life));
     }
     
     float angle = 0;
@@ -37,6 +37,8 @@ public class Orderer extends Visual {
     LocalTime present = LocalTime.now();
     int Secnow = present.getSecond();
     int Seccheck = present.getSecond();
+    int backdrop = 240;
+    int time_changed = 0;
 
     public void sunrays() //72 degress
     {
@@ -84,15 +86,53 @@ public class Orderer extends Visual {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public void stars()
-    {
+    public void stars(){
         float[] bands = getSmoothedBands();
         for(int i = 0 ; i < bands.length ; i++)
         {
             int rx = getRandom(0, width);
             int ry = getRandom(0, height);
-            createShape(rx,ry,(int) bands[i] / 10,0,-300,1);
+            createShape(rx,ry,(int) bands[i] / 10,0,-300,1, 0);
         }
+    }
+
+    int bubble(float x, float y, float size, int points){
+        
+        if (size < (1000 * getSmoothedAmplitude())){
+            circle(x, y, size);
+            return 0;
+        }
+        else {
+            int sides = points * 2;
+            float px = x;
+            float py = y - size; 
+            for(int i = 0 ; i <= sides ; i ++)
+            {
+                float r = (i % 2 == 0) ? size : size / 2; 
+                // float r = radius;
+                float theta = map(i, 0, sides, 0, TWO_PI);
+                float newx = x + sin(theta) * r;
+                float newy = y - cos(theta) * r;
+                
+                //circle(x, y, 20);
+                line(px, py, newx, newy);
+                px = newx;
+                py = newy;
+            }
+            int decrease = (int)(8 - 50 * getSmoothedAmplitude());
+            if (decrease < 1){
+                decrease = 1;
+            }
+            return decrease;
+        }
+    }
+    
+    public void vertrect(float x, float y, float size){
+        rect(x, y, size, height);
+    }
+
+    public void horirect(float x, float y, float size){
+        rect (x, y, width, size);
     }
 
     public void render(){ // renders all shapes in render list
@@ -118,8 +158,31 @@ public class Orderer extends Visual {
                 circle(shape.x, shape.y, shape.size);
                 noFill();
                 stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
+                popMatrix(); 
+            }
+            if (shape.type == 2 && shape.life > 0){
+                stroke(255,255,0);
+                strokeWeight(2);
+                pushMatrix();
+                shape.life = shape.life - bubble(shape.x, shape.y, shape.size, shape.points);
+                shape.size = shape.size + 1;
                 popMatrix();
-                
+            }
+            if (shape.type == 3){
+                fill(255,165,0);
+                stroke(255,165,0);
+                pushMatrix();
+                vertrect(shape.x, shape.y, shape.size);
+                popMatrix();
+                noFill();
+            }
+            if (shape.type == 4){
+                fill(255,165,0);
+                stroke(255,165,0);
+                pushMatrix();
+                horirect(shape.x, shape.y, shape.size);
+                popMatrix();
+                noFill();
             }
         }
 
@@ -139,7 +202,7 @@ public class Orderer extends Visual {
             {
                 poi = poi + 2;
             }
-            createShape(0,0,1,poi,0,0);
+            createShape(0,0,1,poi,0,0, 0);
         }
 
         pushMatrix();
@@ -153,6 +216,31 @@ public class Orderer extends Visual {
         popMatrix();
         angle += 0.01f;
     }
+
+    public void funkybase(){
+        render();
+
+        if (backdrop > 1){
+            createShape(width/2, 0, width/15, 0, 0, 3, 0);
+            createShape(0, height - 2*(height/backdrop), height, 0, 0, 4, 0);
+            backdrop = backdrop - 1;
+        }
+        if (frameCount % 5 == 0){
+            int xposition = getRandom(0, width);
+            int yposition = getRandom(height - height/backdrop, height);
+
+            int poi = (int) (100 * getSmoothedAmplitude());
+            if (poi < 5){
+                poi = 5;
+            }
+            else if (poi > 15){
+                poi = 15;
+            }
+
+            createShape(xposition, yposition, 1, poi, 0, 2, 8);
+        }
+    }
+
     
     public void settings()
     {
@@ -162,7 +250,7 @@ public class Orderer extends Visual {
     }
 
     public void setup(){
-        colorMode(HSB);
+        colorMode(RGB);
         noCursor();
         textSize(height / 6);
         
@@ -194,39 +282,66 @@ public class Orderer extends Visual {
         lights();
         switch(stage){
             case 0:
-            chorusbase();
-            stars();
+            funkybase();
             break;
             
             case 1:
+            if (time_changed == 0){
+                Renderlist.clear();
+                time_changed = 1;
+            }
             chorusbase();
             break;
             
             case 2: // Chorus 1
+            if (time_changed == 1){
+                Renderlist.clear();
+                time_changed = 2;
+            }
             chorusbase();
             sunrays();
             break;
 
             case 3:
+            if (time_changed == 3){
+                Renderlist.clear();
+                time_changed = 4;
+            }
             chorusbase();
             break;
 
             case 4: // chorus 2
+            if (time_changed == 4){
+                Renderlist.clear();
+                time_changed = 5;
+            }
             chorusbase();
             stars();
             break;
             
             case 5:
+            if (time_changed == 5){
+                Renderlist.clear();
+                time_changed = 6;
+            }
             chorusbase();
             break;
 
             case 6: // chorus 3
+            if (time_changed == 6){
+                Renderlist.clear();
+                time_changed = 7;
+            }
             chorusbase();
             sunrays();
             stars();
             break;
             
             case 7:
+            if (time_changed == 7){
+                Renderlist.clear();
+                time_changed = 8;
+            }
             chorusbase();
             break;
         }
@@ -236,10 +351,10 @@ public class Orderer extends Visual {
         if (time <= 27){
             stage = 0;
         }
-        if (time > 27 & time <= 62){
+        if (time > 27 & time <= 61){
             stage = 1;
         }
-        if (time > 62 & time <= 82){
+        if (time > 61 & time <= 82){
             stage = 2;
         }
         if (time > 82 & time <= 129){
@@ -257,38 +372,36 @@ public class Orderer extends Visual {
         if (time > 238){
             stage = 7;
         }
-        if(time > 158 & time <= 162){
+        if(time > 159 & time <= 163){
             fill(255);
             text("IN THE SILENCE", width / 7, height / 3);
-            if (time > 1610)
+            if (time > 162)
             {
                 text("IN THE SILENCE", width / 7, (height / 3) * 2);
             }
             noFill();
         }
-        if ( Renderlist.size() > 900){
-            Renderlist.remove(1);
-            Renderlist.remove(2);
-            Renderlist.remove(3);
-            Renderlist.remove(4);
-            Renderlist.remove(5);
-            Renderlist.remove(6);
-            Renderlist.remove(7);
-            Renderlist.remove(8);
-            Renderlist.remove(9);
-            Renderlist.remove(10);
-
+        
+        for (int i = 0; i < Renderlist.size(); i++){
+            if (i > 900)
+            {
+                Renderlist.remove(i - 900);
+            }
         }
-        //Debug Stuff
-        //textSize(12);
-        //text("Renderlist size:" + Renderlist.size(), 30, 30);
-        //text("Time:" + time, 30, 45);
-        //text("Time_Debug:" + Secnow, 30, 60);
 
-        //for(int i = 0 ; i < bands.length ; i++)
-        //{
-        //    text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
-        //}
+
+        //Debug Stuff
+        textSize(12);
+        fill(255);
+        text("Renderlist size:" + Renderlist.size(), 30, 30);
+        text("Time:" + time, 30, 45);
+        text("Time_Debug:" + Secnow, 30, 60);
+
+        for(int i = 0 ; i < bands.length ; i++)
+        {
+            text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
+        }
+        noFill();
     }
 
 }
