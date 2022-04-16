@@ -39,6 +39,8 @@ public class Orderer extends Visual {
     int Seccheck = present.getSecond();
     int backdrop = 240;
     int time_changed = 0;
+    int sweep_num = 0;
+    float sweep_place = -100;
 
     public void sunrays() //72 degress
     {
@@ -96,13 +98,17 @@ public class Orderer extends Visual {
         }
     }
 
-    int bubble(float x, float y, float size, int points){
+    int bubble(float x, float y, float size, int points, int life){
+        float max = 0;
         
-        if (size < (1000 * getSmoothedAmplitude())){
-            circle(x, y, size);
-            return 0;
+        if (time > 255){
+            max = 500;
         }
-        else {
+        else{
+            max = 1000 * getSmoothedAmplitude();
+        }
+
+        if (size > max || life <= 0){
             int sides = points * 2;
             float px = x;
             float py = y - size; 
@@ -125,6 +131,22 @@ public class Orderer extends Visual {
             }
             return decrease;
         }
+        else{
+            circle(x, y, size);
+            return 0;
+        }
+    }
+    
+    public void creSweeper(){
+        if(frameCount % 360 == 0){
+            sweep_num ++;
+            createShape(0,0,0,0,0,5,sweep_num);
+        }
+    }
+
+    public void drawSweeper(float x){
+        float position = (x * width/ 360);
+        line(position, 0, position, height);
     }
     
     public void vertrect(float x, float y, float size){
@@ -144,7 +166,6 @@ public class Orderer extends Visual {
             polygon(shape.x, shape.y, shape.size, shape.points); // drawing polygons
             popMatrix();
             shape.size = shape.size + 16f;
-            
             }
             if (shape.type == 1){
                 pushMatrix();
@@ -160,37 +181,97 @@ public class Orderer extends Visual {
                 stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
                 popMatrix(); 
             }
-            if (shape.type == 2 && shape.life > 0){
-                stroke(255,255,0);
+            if (shape.type == 2){
+                setColour(shape.type);
                 strokeWeight(2);
                 pushMatrix();
-                shape.life = shape.life - bubble(shape.x, shape.y, shape.size, shape.points);
-                shape.size = shape.size + 1;
+                if(shape.x - shape.size <= ((sweep_place) * width/360) && shape.x + shape.size >= (sweep_place * width/ 360)){
+                    shape.life = 0;
+                }
+                if(shape.life > 0){
+                    shape.life = shape.life - bubble(shape.x, shape.y, shape.size, shape.points, shape.life);
+                    if((shape.y - shape.size/2) >= (height - height/backdrop)){
+                        shape.size = shape.size + 1;
+                    }
+                    else{
+                        shape.life = 0;
+                    }
+                }
+                else if(stage == 7){
+                    setColour(shape.type);
+                    fill(0,0,0);
+                    pushMatrix();
+                    bubble(shape.x, shape.y, shape.size, shape.points, shape.life);
+                    popMatrix();
+                    noFill();
+                }
                 popMatrix();
             }
             if (shape.type == 3){
-                fill(255,165,0);
-                stroke(255,165,0);
+                setColour(shape.type);
                 pushMatrix();
                 vertrect(shape.x, shape.y, shape.size);
                 popMatrix();
                 noFill();
             }
             if (shape.type == 4){
-                fill(255,165,0);
-                stroke(255,165,0);
+                setColour(shape.type);
                 pushMatrix();
                 horirect(shape.x, shape.y, shape.size);
                 popMatrix();
                 noFill();
             }
+            if (shape.type == 5){
+                setColour(shape.type);
+                pushMatrix();
+                drawSweeper(shape.x);
+                popMatrix();
+                strokeWeight(2);
+                shape.x ++;
+                if(shape.life == sweep_num){
+                    sweep_place = (shape.x - 2);
+                }
+            }
         }
-
     }
 
+    public void setColour(int type){
+        if(type == 2){
+            switch(stage){
+                case 0:
+                    stroke(255,255,0);
+                    break;
+                case 5:
+                    stroke(255,0,0);
+                    break;
+                case 7:
+                    stroke(0,0,0);
+                    break;
+            }
+        }
+        if(type == 3 || type == 4){
+            switch(stage){
+                case 0:
+                    fill(255,165,0);
+                    stroke(255,165,0);
+                    break;
+                case 5:
+                    stroke(191,64,191);
+                    fill(191,64,191);
+                    break;
+                case 7:
+                    stroke(0,252,0);
+                    fill(0,252,0);
+                    break;
+            }
+        }
+        if(type == 5){
+            stroke(255,255,255);
+            strokeWeight(15);
+        }
+    }
 
-    public void chorusbase()
-    {
+    public void chorusbase(){
         stroke(map(getSmoothedAmplitude(), 0, 1, 0, 255), 255, 255);
         strokeWeight(2);
         render();
@@ -242,8 +323,7 @@ public class Orderer extends Visual {
     }
 
     
-    public void settings()
-    {
+    public void settings(){
         size(800, 800, P3D);
         println("CWD: " + System.getProperty("user.dir"));
         fullScreen(P3D, 1);
@@ -281,14 +361,15 @@ public class Orderer extends Visual {
         noFill();
         lights();
         switch(stage){
-            case 0:
+            case 0: //Intro
             funkybase();
             break;
             
-            case 1:
+            case 1: //Verse 1
             if (time_changed == 0){
                 Renderlist.clear();
                 time_changed = 1;
+                backdrop = 240;
             }
             chorusbase();
             break;
@@ -299,50 +380,51 @@ public class Orderer extends Visual {
                 time_changed = 2;
             }
             chorusbase();
-            sunrays();
             break;
 
-            case 3:
+            case 3: //Verse 2
+            if (time_changed == 2){
+                Renderlist.clear();
+                time_changed = 3;
+            }
+            chorusbase();
+            break;
+
+            case 4: //chorus 2
             if (time_changed == 3){
                 Renderlist.clear();
                 time_changed = 4;
             }
             chorusbase();
+            stars();
             break;
-
-            case 4: // chorus 2
+            
+            case 5: //Funky bit
             if (time_changed == 4){
                 Renderlist.clear();
                 time_changed = 5;
             }
-            chorusbase();
-            stars();
-            break;
-            
-            case 5:
-            if (time_changed == 5){
-                Renderlist.clear();
-                time_changed = 6;
-            }
-            chorusbase();
+            funkybase();
+            creSweeper();
             break;
 
             case 6: // chorus 3
-            if (time_changed == 6){
+            if (time_changed == 5){
                 Renderlist.clear();
-                time_changed = 7;
+                time_changed = 6;
+                backdrop = 240;
             }
             chorusbase();
             sunrays();
             stars();
             break;
             
-            case 7:
-            if (time_changed == 7){
+            case 7: //Outro
+            if (time_changed == 6){
                 Renderlist.clear();
-                time_changed = 8;
+                time_changed = 7;
             }
-            chorusbase();
+            funkybase();
             break;
         }
         present = LocalTime.now();
