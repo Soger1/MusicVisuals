@@ -11,7 +11,7 @@ public class wave extends PApplet{
 
     public void wave_render(int y)
     {
-        or.colorMode(PApplet.HSB);
+        or.colorMode(PApplet.RGB);
         or.pushMatrix();
         or.translate(0, 0);
         for (int i = 0; i < or.getAudioBuffer().size(); i++)

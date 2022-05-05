@@ -60,6 +60,7 @@ class Polygon extends Shape
     }
 
     public void render(){
+        
         or.pushMatrix();
         or.translate(or.width / 2,or.height / 2, -200);
         or.rotate( or.frameCount / 200.0f);
@@ -223,11 +224,12 @@ class v_wall extends Shape
     }
 
     public void render(){
-
-        or.fill(255,165,0);
-        or.stroke(255,165,0);
-        vertrect(x, y, size);
-        or.noFill();
+        if (or.stage != 5){
+            or.fill(255,165,0);
+            or.stroke(255,165,0);
+            vertrect(x, y, size);
+            or.noFill();
+        }
     }
 
     public void vertrect(float x, float y, float size){
@@ -250,10 +252,12 @@ class h_wall extends Shape
     }
 
     public void render(){
-        or.fill(255,165,0);
-        or.stroke(255,165,0);
-        horirect(x, y, size);
-        or.noFill();
+        if (or.stage != 5){
+            or.fill(255,165,0);
+            or.stroke(255,165,0);
+            horirect(x, y, size);
+            or.noFill();
+        }
     }
 
     public void horirect(float x, float y, float size){
@@ -268,13 +272,15 @@ class sweeper extends Shape
     int type;
     int stage;
     Orderer or;
+    int dir;
 
-    public sweeper(float x, float life, int type, int stage, Orderer or)
+    public sweeper(float x, float life, int type, int stage, Orderer or, int dir)
     {
         this.x = x;
         this.life = life;
         this.type = type;
         this.or = or;
+        this.dir = dir;
     }
 
     public void render(){
@@ -282,7 +288,7 @@ class sweeper extends Shape
         or.pushMatrix();
         drawSweeper(x);
         or.popMatrix();
-        or.strokeWeight(2);
+        or.strokeWeight(or.width/20);
         x ++;
         if(life == getsweepnum()){
             sweep_place = (x - 2);
@@ -290,7 +296,10 @@ class sweeper extends Shape
     }
 
     public void drawSweeper(float x){
-        float position = (x * width/ 360);
-        or.line(position, 0, position, height);
+        if (this.dir == 0 && x <= or.width + 20)
+        {
+        float position = (x * or.width/ 360);
+        or.line(position, 0, position, or.height);
+        }
     }
 }

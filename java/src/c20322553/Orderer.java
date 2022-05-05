@@ -12,7 +12,7 @@ public class Orderer extends Visual {
     ArrayList<Shape> Renderlist = new ArrayList<>();
     
     float angle = 0;
-    private int stage = 0;
+    int stage = 0;
     private int time = 0;
     float sphereSize = 0;
     float split = 0;
@@ -102,9 +102,17 @@ public class Orderer extends Visual {
     }
     
     public void creSweeper(){
-        if(frameCount % 360 == 0){
+        if(frameCount % 60 == 0){
             sweep_num ++;
-            Renderlist.add(new sweeper(0,sweep_num,5, stage,this));
+            Renderlist.add(new sweeper(0,sweep_num,5, stage,this, 0));
+            if (frameCount % 120 == 0)
+            {
+                int poi = (int) (50 * getSmoothedAmplitude());
+                if (poi >= 3 )
+                {
+                    poi = poi + 2;
+                }
+            }
         }
     }
 
@@ -138,6 +146,11 @@ public class Orderer extends Visual {
         rotateX(angle);
         rotateZ(angle);       
         sphereSize = (400 * getSmoothedAmplitude()); 
+        if(getstage() == 5)
+        {
+            stroke(0);
+        }
+
         sphere(sphereSize);   
         popMatrix();
         angle += 0.01f;
@@ -254,6 +267,7 @@ public class Orderer extends Visual {
             }
             funkybase();
             creSweeper();
+
             break;
 
             case 6: // chorus 3
@@ -281,10 +295,10 @@ public class Orderer extends Visual {
         if (time <= 13){
             stage = 0;
         }
-        if (time > 13 & time <= 62){
+        if (time > 13 & time <= 61){
             stage = 1;
         }
-        if (time > 62 & time <= 82){
+        if (time > 61 & time <= 82){
             stage = 2;
         }
         if (time > 82 & time <= 129){
@@ -322,17 +336,17 @@ public class Orderer extends Visual {
 
 
         //Debug Stuff
-        //textSize(12);
-        //fill(255);
-        //text("Renderlist size:" + Renderlist.size(), 30, 30);
-        //text("Time:" + time, 30, 45);
-        //text("Time_Debug:" + Secnow, 30, 60);
+        textSize(12);
+        fill(255);
+        text("Renderlist size:" + Renderlist.size(), 30, 30);
+        text("Time:" + frameCount, 30, 45);
+        text("Time_Debug:" + Secnow, 30, 60);
 
-        //for(int i = 0 ; i < bands.length ; i++)
-        //{
-        //    text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
-        //}
-        //noFill();
+        for(int i = 0 ; i < bands.length ; i++)
+        {
+            text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
+        }
+        noFill();
     }
 
 }
