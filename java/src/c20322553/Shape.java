@@ -124,8 +124,10 @@ class bubble extends Shape
     int life;
     int type;
     Orderer or;
+    int h;
+    int w;
 
-    public bubble(float x, float y, float size, int points, int life, Orderer or, int type){
+    public bubble(float x, float y, float size, int points, int life, Orderer or, int type,int h, int w){
         this.x = x;
         this.y = y;
         this.size = size;
@@ -133,23 +135,27 @@ class bubble extends Shape
         this.life = life;
         this.or = or;
         this.type = type;
+        this.h = h;
+        this.w = w;
     }
 
     public void render(){
         or.stroke(255,255,0);
         or.strokeWeight(2);
         or.pushMatrix();
-        if(x - size <= ((sweep_place) * or.width/360) && +size >= (sweep_place * or.width/ 360)){
+        if(x - size <= ((sweep_place) * w/360) && +size >= (sweep_place * w/ 360)){
            life = 0;
         }
         if(life > 0){
             life = life - bubbles(x, y, size, points, life);
-            if((y - size/2) >= (or.height - or.height/getbackdrop())){
-                size ++;
+            
+            if((y - size/2) >= (h - h/getbackdrop())){
+                life = 0;
             }
-            //else{
-            //    life = 0;
-            //}
+            else
+            {
+                size++;
+            }
         }
         else if( getstage() == 7){
             or.stroke(255,255,0);
@@ -169,7 +175,7 @@ class bubble extends Shape
             max = 500;
         }
         else{
-            max = 1000 * getSmoothedAmplitude();
+            max = 1000 * or.getSmoothedAmplitude();
         }
 
         if (size > max || life <= 0){
@@ -189,7 +195,7 @@ class bubble extends Shape
                 px = newx;
                 py = newy;
             }
-            int decrease = (int)(8 - 50 * getSmoothedAmplitude());
+            int decrease = (int)(8 - 50 * or.getSmoothedAmplitude());
             if (decrease < 1){
                 decrease = 1;
             }
@@ -287,7 +293,4 @@ class sweeper extends Shape
         float position = (x * width/ 360);
         or.line(position, 0, position, height);
     }
-
-    
-    
 }

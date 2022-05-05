@@ -9,22 +9,22 @@ import java.time.*;
 
 public class Orderer extends Visual {
 
-    
     ArrayList<Shape> Renderlist = new ArrayList<>();
     
     float angle = 0;
     private int stage = 0;
     private int time = 0;
-    float boxSize = 0;
+    float sphereSize = 0;
     float split = 0;
     float rotor = 0;
     LocalTime present = LocalTime.now();
     int Secnow = present.getSecond();
     int Seccheck = present.getSecond();
-    private int backdrop = 240;
+    int backdrop = 240;
     int time_changed = 0;
     private int sweep_num = 0;
     public float sweep_place = -100;
+    wave waveform = new wave(this);
 
     public int getTime() {
         return this.time;
@@ -40,6 +40,8 @@ public class Orderer extends Visual {
     public int getstage() {
         return this.stage;
     }
+
+
 
     public void sunrays() //72 degress
     {
@@ -94,6 +96,8 @@ public class Orderer extends Visual {
             int rx = getRandom(0, width);
             int ry = getRandom(0, height);
             Renderlist.add(new Star(rx,ry,(int) bands[i] / 10, -300,this));
+            waveform.wave_render(height/2);
+
     }
     }
     
@@ -133,8 +137,8 @@ public class Orderer extends Visual {
 
         rotateX(angle);
         rotateZ(angle);       
-        boxSize = (400 * getSmoothedAmplitude()); 
-        sphere(boxSize);   
+        sphereSize = (400 * getSmoothedAmplitude()); 
+        sphere(sphereSize);   
         popMatrix();
         angle += 0.01f;
     }
@@ -142,11 +146,12 @@ public class Orderer extends Visual {
     public void funkybase(){
         render();
 
-        if (backdrop > 1){
+        if (backdrop > 1 && backdrop != 0){
             Renderlist.add(new v_wall(width/2,0,width/15,this));
             Renderlist.add(new h_wall(0,height - 2*(height/backdrop),height,this));
             backdrop = backdrop - 1;
         }
+
         if (frameCount % 5 == 0){
             int xposition = getRandom(0, width);
             int yposition = getRandom(height - height/backdrop, height);
@@ -160,7 +165,7 @@ public class Orderer extends Visual {
             }
 
 
-            Renderlist.add(new bubble(xposition,yposition,1,poi,800,this,2));
+            Renderlist.add(new bubble(xposition,yposition,1,poi,80,this,2,height,width));
         }
     }
 
@@ -221,6 +226,7 @@ public class Orderer extends Visual {
                 Renderlist.clear();
                 time_changed = 2;
             }
+            sunrays();
             chorusbase();
             break;
 
@@ -272,13 +278,13 @@ public class Orderer extends Visual {
         present = LocalTime.now();
         Secnow = present.getSecond();
         time = time + Timer(Secnow);
-        if (time <= 27){
+        if (time <= 13){
             stage = 0;
         }
-        if (time > 27 & time <= 61){
+        if (time > 13 & time <= 62){
             stage = 1;
         }
-        if (time > 61 & time <= 82){
+        if (time > 62 & time <= 82){
             stage = 2;
         }
         if (time > 82 & time <= 129){
@@ -296,8 +302,9 @@ public class Orderer extends Visual {
         if (time > 238){
             stage = 7;
         }
-        if(time > 159 & time <= 163){
+        if(time > 159 & time <= 164){
             fill(255);
+            textSize(width/12);
             text("IN THE SILENCE", width / 7, height / 3);
             if (time > 162)
             {
@@ -315,17 +322,17 @@ public class Orderer extends Visual {
 
 
         //Debug Stuff
-        textSize(12);
-        fill(255);
-        text("Renderlist size:" + Renderlist.size(), 30, 30);
-        text("Time:" + time, 30, 45);
-        text("Time_Debug:" + Secnow, 30, 60);
+        //textSize(12);
+        //fill(255);
+        //text("Renderlist size:" + Renderlist.size(), 30, 30);
+        //text("Time:" + time, 30, 45);
+        //text("Time_Debug:" + Secnow, 30, 60);
 
-        for(int i = 0 ; i < bands.length ; i++)
-        {
-            text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
-        }
-        noFill();
+        //for(int i = 0 ; i < bands.length ; i++)
+        //{
+        //    text("Band_" + i + ":" + bands[i], 150, 30 + 15 * i);
+        //}
+        //noFill();
     }
 
 }
