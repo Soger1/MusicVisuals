@@ -1,8 +1,8 @@
 # Music Visualiser Project
 
-Name:
+Name:Ehan Holohan
 
-Student Number: 
+Student Number: C20322553
 
 ## Instructions
 - Fork this repository and use it a starter project for your assignment
@@ -13,11 +13,19 @@ Student Number:
 
 # Description of the assignment
 
+Our goal with this assignment was to make a musicvideo using java code that reacts to the audio of the song
+
 # Instructions
+
+run main located in File c20322553
 
 # How it works
 
+it works mostly by using a combination of functions that run temporary effects and a renderlist, which contains objects that are rendered in order, the classes for these shapes are located in the shape.java file
+
 # What I am most proud of in the assignment
+
+Im proud of the renderlist and associated shape objects as it allows for easy rendering of persitant objects
 
 # Markdown Tutorial
 
