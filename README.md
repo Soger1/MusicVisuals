@@ -21,7 +21,8 @@ run main located in File c20322553, there are no other special controls the func
 
 # How it works
 
-it works mostly by using a combination of functions that run temporary effects and a renderlist, which contains objects that are rendered in order, the classes for these shapes are located in the shape.java file. 
+it works mostly by using a combination of functions that run temporary effects and a renderlist, which contains objects that are rendered in order, the classes for these shapes are located in the shape.java file.
+
 A function uses the system clock to create a time variable, we did this as we were having issues where if a computer ran the program slower, it would alter the timing. This time gets past to the draw function, and then the draw function checks which section of the song it is in, then calls different functions based on that section. There are different main functions which are used in the song, there purpose is to at certain intervals create the shape objects, and to call the render function. The functions which create the shapes work by making subclasses of the supertype shape, then adding variables to it based on the type of shape it is, and also different variables like width and height, then they are put into the render list. When the render function is called it takes the render list, and for each shape in it draws it on screen based on its type and parameters. There are certain functions which work outside the render function, such as the sphere and the waveform, this is because they need to be more reactive to the music.
 
 # What I am most proud of in the assignment
