@@ -51,4 +51,4 @@ public void render(){
 We are proud of the renderlist and associated shape objects as it allows for easy rendering of persitant objects. We are also proud of the section which visualises the bubbles, as it is a creative way to have it be audio reactive, while also following the theming of the album.
 
 Link to the youtube video of the project
-[![YouTube](https://www.youtube.com/watch?v=Dj2lVj9ZCaE)
+https://www.youtube.com/watch?v=Dj2lVj9ZCaE
