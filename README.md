@@ -1,8 +1,16 @@
 # Music Visualiser Project
 
-Name:Ehan Holohan
+Name: Ehan Holohan
 
 Student Number: C20322553
+
+Name: Cailum Doyle
+
+Student Number: C20341351
+
+Name: Evan Mulligan
+
+Student Number: c20466884
 
 ## Instructions
 - Fork this repository and use it a starter project for your assignment
