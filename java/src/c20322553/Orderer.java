@@ -33,6 +33,7 @@ public class Orderer extends Visual {
     float by;
     float sum;
     float average;
+    float building;
 
     public int getTime() {
         return this.time;
@@ -56,14 +57,17 @@ public class Orderer extends Visual {
         fill(30, 11, 69);
         rect(0, 0, width, height/2);
 
+        stroke(16, 3, 43);
+        fill(16, 3, 43);
+        rect(0, 0, width, height/2-height/12);
 
         //draw the sun
         stroke(255, 0, 0);
         fill(255,0,0);
-        circle(width/2, height/4, getSmoothedAmplitude()*2000);
+        circle(width/2, height/4, getSmoothedAmplitude()*2000);//make sun move to the music
         stroke(255);
-        
-        //draw lines for the ground
+
+        //draw vertical lines for the ground
         for (int i = 0; i <= 13; i++){
             bx = map(i, 0,13, 0-width/2, width+width/2);
 
