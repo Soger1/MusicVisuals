@@ -223,13 +223,12 @@ class v_wall extends Shape
         this.or = or;
     }
 
-    public void render(){
-        if (or.stage != 5){
-            or.fill(255,165,0);
-            or.stroke(255,165,0);
-            vertrect(x, y, size);
-            or.noFill();
-        }
+    public void render()
+    {
+        or.fill(255,165,0);
+        or.stroke(255,165,0);
+        vertrect(x, y, size);
+        or.noFill();    
     }
 
     public void vertrect(float x, float y, float size){
@@ -251,13 +250,12 @@ class h_wall extends Shape
         this.or = or;
     }
 
-    public void render(){
-        if (or.stage != 5){
-            or.fill(255,165,0);
-            or.stroke(255,165,0);
-            horirect(x, y, size);
-            or.noFill();
-        }
+    public void render()
+    {
+        or.fill(255,165,0);
+        or.stroke(255,165,0);
+        horirect(x, y, size);
+        or.noFill();
     }
 
     public void horirect(float x, float y, float size){
