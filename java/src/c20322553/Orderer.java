@@ -3,6 +3,9 @@ package c20322553;
 import ie.tudublin.Visual;
 import ie.tudublin.*;
 import java.util.*;
+
+import ddf.minim.AudioBuffer;
+
 import java.time.*;
 
 
@@ -28,6 +31,8 @@ public class Orderer extends Visual {
     synthWave synthform = new synthWave(this);
     float bx;
     float by;
+    float sum;
+    float average;
 
     public int getTime() {
         return this.time;
@@ -46,6 +51,19 @@ public class Orderer extends Visual {
 
     public void synthwave()
     {
+        //backdrop
+        stroke(30, 11, 69);
+        fill(30, 11, 69);
+        rect(0, 0, width, height/2);
+
+
+        //draw the sun
+        stroke(255, 0, 0);
+        fill(255,0,0);
+        circle(width/2, height/4, getSmoothedAmplitude()*2000);
+        stroke(255);
+        
+        //draw lines for the ground
         for (int i = 0; i <= 13; i++){
             bx = map(i, 0,13, 0-width/2, width+width/2);
 
@@ -74,10 +92,11 @@ public class Orderer extends Visual {
         stroke(255);
         fill(0);
 
+        //render horizontal lines to make ground look like its moving
         if(frameCount % 20 == 0){
             Renderlist.add(new hLine(0, height/2, 0, this));
         }
-        synthform.wave_render(height/2);
+        synthform.wave_render(height/2);//call function to add waveform
         render();
     }
 
