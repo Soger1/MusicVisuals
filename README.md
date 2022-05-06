@@ -25,6 +25,27 @@ it works mostly by using a combination of functions that run temporary effects a
 
 A function uses the system clock to create a time variable, we did this as we were having issues where if a computer ran the program slower, it would alter the timing. This time gets past to the draw function, and then the draw function checks which section of the song it is in, then calls different functions based on that section. There are different main functions which are used in the song, there purpose is to at certain intervals create the shape objects, and to call the render function. The functions which create the shapes work by making subclasses of the supertype shape, then adding variables to it based on the type of shape it is, and also different variables like width and height, then they are put into the render list. When the render function is called it takes the render list, and for each shape in it draws it on screen based on its type and parameters. There are certain functions which work outside the render function, such as the sphere and the waveform, this is because they need to be more reactive to the music.
 
+Renderlist:
+This will call the render function in each subobjects
+```
+ public void render(){ // renders all shapes in render list
+        for (Shape shape: Renderlist){
+            shape.render();
+        }
+    }
+```
+```
+public void render(){
+        
+        or.pushMatrix();
+        or.translate(or.width / 2,or.height / 2, -200);
+        or.rotate( or.frameCount / 200.0f);
+        polygon(x, y, size, points); // drawing polygons
+        or.popMatrix();
+        size = size + 16f;
+    }
+```
+
 # What I am most proud of in the assignment
 
 We are proud of the renderlist and associated shape objects as it allows for easy rendering of persitant objects. We are also proud of the section which visualises the bubbles, as it is a creative way to have it be audio reactive, while also following the theming of the album.
