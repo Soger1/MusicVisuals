@@ -303,3 +303,23 @@ class sweeper extends Shape
         }
     }
 }
+
+class hLine extends Shape{
+    float gain;
+    float x;
+    float y;
+    Orderer or;
+
+    public hLine(float x, float y, float gain, Orderer or){
+        this.x = x;
+        this.y = y;
+        this.gain = gain;
+        this.or = or;
+    }
+
+    public void render(){
+        or.line(0, y, or.width, y);
+        gain = gain + (float)1.618/10;
+        y = y + gain;
+    }
+}

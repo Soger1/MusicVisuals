@@ -25,6 +25,9 @@ public class Orderer extends Visual {
     private int sweep_num = 0;
     public float sweep_place = -100;
     wave waveform = new wave(this);
+    synthWave synthform = new synthWave(this);
+    float bx;
+    float by;
 
     public int getTime() {
         return this.time;
@@ -41,7 +44,42 @@ public class Orderer extends Visual {
         return this.stage;
     }
 
+    public void synthwave()
+    {
+        for (int i = 0; i <= 13; i++){
+            bx = map(i, 0,13, 0-width/2, width+width/2);
 
+            if(bx < 0){
+                by = -bx;
+                bx = 0;
+                if(height - by < height/2){
+                    by = height/2;
+                }
+            }
+            else if(bx > width){
+                by = bx - width;
+                bx = width;
+                if(height - by < height/2){
+                    by = height/2;
+                }
+            }
+            else{
+                by = 0;
+            }
+
+            line(bx,height-by,width/2,height/2-1);
+
+        }
+
+        stroke(255);
+        fill(0);
+
+        if(frameCount % 20 == 0){
+            Renderlist.add(new hLine(0, height/2, 0, this));
+        }
+        synthform.wave_render(height/2);
+        render();
+    }
 
     public void sunrays() //72 degress
     {
@@ -231,7 +269,7 @@ public class Orderer extends Visual {
                 time_changed = 1;
                 backdrop = 240;
             }
-            chorusbase();
+            synthwave();
             break;
             
             case 2: // Chorus 1
@@ -248,7 +286,7 @@ public class Orderer extends Visual {
                 Renderlist.clear();
                 time_changed = 3;
             }
-            chorusbase();
+            synthwave();
             break;
 
             case 4: //chorus 2
